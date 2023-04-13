@@ -5,15 +5,14 @@
 //  Created by Serena on 16/09/2022
 //
 
-
 #if canImport(UIKit)
 import UIKit
 #elseif canImport(AppKit)
 import AppKit
 #endif
 
-import UniformTypeIdentifiers
 import SVGWrapper
+import UniformTypeIdentifiers
 
 @_exported
 import CoreUIBridge
@@ -102,7 +101,7 @@ public class AssetCatalogWrapper {
         }
         
         if !failedItems.isEmpty {
-            var failedItemsMessage: String = ""
+            var failedItemsMessage = ""
             for (rendition, error) in failedItems {
                 failedItemsMessage.append("\(rendition.name): \(error.localizedLowercase)")
             }
@@ -114,7 +113,6 @@ public class AssetCatalogWrapper {
 
 /// Represents a Core UI rendition
 public class Rendition: Hashable {
-    
     /// the ThemeSubtype constant used to identify renditions
     /// classified as `macCatalyst`
     /// see `RenditionIdiom`'s init
@@ -156,7 +154,6 @@ public class Rendition: Hashable {
         default:
             return nil
         }
-        
     }
     
     public init(_ namedLookup: CUINamedLookup) {
@@ -310,20 +307,20 @@ public class Rendition: Hashable {
             return view
         }
         /*
-        #else
-        public var nsView: NSView {
-            switch self {
-            case .color(let color):
-                let view = NSView()
-                view.wantsLayer = true
-                view.layer?.backgroundColor = color
-                return view
-            case .image(let image):
-                return NSImageView(image: NSImage(cgImage: image,
-                                                  size: CGSize(width: image.width, height: image.height)))
-            }
-        }
-         */
+         #else
+         public var nsView: NSView {
+             switch self {
+             case .color(let color):
+                 let view = NSView()
+                 view.wantsLayer = true
+                 view.layer?.backgroundColor = color
+                 return view
+             case .image(let image):
+                 return NSImageView(image: NSImage(cgImage: image,
+                                                   size: CGSize(width: image.width, height: image.height)))
+             }
+         }
+          */
         #endif
         
         public init?(_ rendition: Rendition) {
@@ -356,7 +353,7 @@ public enum RenditionType: Int, Codable, Hashable, CustomStringConvertible, Case
             let key = namedLookup.key
             
             switch key.themeElement {
-            case 85 where key.themePart == 220 :
+            case 85 where key.themePart == 220:
                 self = .icon
             case 9:
                 self = .imageSet
@@ -409,14 +406,12 @@ public enum RenditionType: Int, Codable, Hashable, CustomStringConvertible, Case
             return false
         }
     }
-    
 }
 
 @available(*, deprecated, message: "Renamed to Rendition.Representation")
 public typealias RenditionPreview = Rendition.Representation
 
 public extension CUICatalog {
-    
     internal func __getRenditionCollection() -> RenditionCollection {
         var dict: [RenditionType: [Rendition]] = [:]
         
@@ -437,7 +432,7 @@ public extension CUICatalog {
         
         // sort by Alphabetical order
         arr = arr.sorted { first, second in
-            return first.type.description < second.type.description
+            first.type.description < second.type.description
         }
         
         return arr
@@ -460,12 +455,12 @@ public extension CUICatalog {
         return keyStore
     }
     
-    func editItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation) throws {
-        let keyStore = try editingItem(item, fileURL: fileURL, to: newValue)
+    func editItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String?) throws {
+        let keyStore = try editingItem(item, fileURL: fileURL, to: newValue, newNameIfImage: newNameIfImage)
         try writekeyStore(keyStore, to: fileURL)
     }
     
-    func editingItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation) throws -> CUIMutableCommonAssetStorage {
+    func editingItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String?) throws -> CUIMutableCommonAssetStorage {
         guard let keyStore = CUIMutableCommonAssetStorage(path: fileURL.path, forWriting: true) else {
             throw _Errors.unableToAccessCatalogFile(fileURL: fileURL)
         }
@@ -514,10 +509,10 @@ public extension CUICatalog {
                 context.draw(newImage, in: CGRect(origin: .zero, size: unslicedSize))
             }
             
-            //Add Bitmap Wrapper and Set Rendition Properties
+            // Add Bitmap Wrapper and Set Rendition Properties
             generator.addBitmap(wrapper)
             generator.addSliceRect(rendition._destinationFrame())
-            generator.prepareToEdit(forRendition: rendition)
+            generator.prepareToEdit(forRendition: rendition, newName: newNameIfImage)
             
             guard let csiRep = generator.csiRepresentation(withCompression: true) else {
                 throw _Errors.failedToEditItem()
@@ -585,24 +580,23 @@ public extension CUICatalog {
             }
         }
     }
-    
 }
 
 private extension CSIGenerator {
-    func prepareToEdit(forRendition rendition: CUIThemeRendition) {
+    func prepareToEdit(forRendition rendition: CUIThemeRendition, newName: String?) {
         let flags = rendition.renditionFlags()?.pointee
         
-        name = rendition.name()
+        name = newName ?? rendition.name()
         blendMode = rendition.blendMode
         
-        colorSpaceID                  = Int16(rendition.colorSpaceID())
-        exifOrientation               = rendition.exifOrientation
-        opacity                       = rendition.opacity
-        scaleFactor                   = UInt32(rendition.scale())
-        templateRenderingMode         = rendition.templateRenderingMode()
-        utiType                       = rendition.utiType()
-        isVectorBased                 = rendition.isVectorBased()
-        excludedFromContrastFilter    = Bool(truncating: (flags?.isExcludedFromContrastFilter ?? 0) as NSNumber)
+        colorSpaceID = Int16(rendition.colorSpaceID())
+        exifOrientation = rendition.exifOrientation
+        opacity = rendition.opacity
+        scaleFactor = UInt32(rendition.scale())
+        templateRenderingMode = rendition.templateRenderingMode()
+        utiType = rendition.utiType()
+        isVectorBased = rendition.isVectorBased()
+        excludedFromContrastFilter = Bool(truncating: (flags?.isExcludedFromContrastFilter ?? 0) as NSNumber)
     }
 }
 
@@ -616,14 +610,13 @@ struct StringError: Error, LocalizedError {
     var errorDescription: String? { description }
 }
 
-fileprivate extension Optional {
+private extension Optional {
     func unwrap(orThrow error: Error) throws -> Wrapped {
         guard let self = self else { throw error }
         return self
     }
     
     func unwrap(_ error: String) throws -> Wrapped {
-        return try self.unwrap(orThrow: StringError(error))
+        return try unwrap(orThrow: StringError(error))
     }
-    
 }
