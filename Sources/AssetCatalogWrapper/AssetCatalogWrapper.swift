@@ -455,12 +455,12 @@ public extension CUICatalog {
         return keyStore
     }
     
-    func editItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String?) throws {
+    func editItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String) throws {
         let keyStore = try editingItem(item, fileURL: fileURL, to: newValue, newNameIfImage: newNameIfImage)
         try writekeyStore(keyStore, to: fileURL)
     }
     
-    func editingItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String?) throws -> CUIMutableCommonAssetStorage {
+    func editingItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String) throws -> CUIMutableCommonAssetStorage {
         guard let keyStore = CUIMutableCommonAssetStorage(path: fileURL.path, forWriting: true) else {
             throw _Errors.unableToAccessCatalogFile(fileURL: fileURL)
         }
@@ -583,10 +583,10 @@ public extension CUICatalog {
 }
 
 private extension CSIGenerator {
-    func prepareToEdit(forRendition rendition: CUIThemeRendition, newName: String?) {
+    func prepareToEdit(forRendition rendition: CUIThemeRendition, newName: String) {
         let flags = rendition.renditionFlags()?.pointee
         
-        name = newName ?? rendition.name()
+        name = newName
         blendMode = rendition.blendMode
         
         colorSpaceID = Int16(rendition.colorSpaceID())
