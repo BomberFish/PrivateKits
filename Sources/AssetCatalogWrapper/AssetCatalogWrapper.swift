@@ -488,6 +488,7 @@ public extension CUICatalog {
             }
             
             let unslicedSize: CGSize = rendition.unslicedSize()
+            print("hw", unslicedSize.height, unslicedSize.width)
             let renditionLayout = rendition.type == 0 ? Int16(rendition.subtype) : Int16(rendition.type)
             guard let generator = CSIGenerator(canvasSize: unslicedSize, sliceCount: 1, layout: renditionLayout),
                   let wrapper = CSIBitmapWrapper(pixelWidth: UInt32(unslicedSize.width),
