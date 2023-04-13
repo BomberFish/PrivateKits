@@ -455,12 +455,12 @@ public extension CUICatalog {
         return keyStore
     }
     
-    func editItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String) throws {
-        let keyStore = try editingItem(item, fileURL: fileURL, to: newValue, newNameIfImage: newNameIfImage)
+    func editItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String, renWidth: Double, renHeight: Double) throws {
+        let keyStore = try editingItem(item, fileURL: fileURL, to: newValue, newNameIfImage: newNameIfImage, renWidth: renWidth, renHeight: renHeight)
         try writekeyStore(keyStore, to: fileURL)
     }
     
-    func editingItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String) throws -> CUIMutableCommonAssetStorage {
+    func editingItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String, renWidth: Double, renHeight: Double) throws -> CUIMutableCommonAssetStorage {
         guard let keyStore = CUIMutableCommonAssetStorage(path: fileURL.path, forWriting: true) else {
             throw _Errors.unableToAccessCatalogFile(fileURL: fileURL)
         }
@@ -488,7 +488,7 @@ public extension CUICatalog {
             }
             
 //            let unslicedSize: CGSize = rendition.unslicedSize()
-            let unslicedSize = CGSize(width: 200.0, height: 200.0)
+            let unslicedSize = CGSize(width: renWidth, height: renHeight)
             print("hw", unslicedSize.height, unslicedSize.width)
             let renditionLayout = rendition.type == 0 ? Int16(rendition.subtype) : Int16(rendition.type)
             guard let generator = CSIGenerator(canvasSize: unslicedSize, sliceCount: 1, layout: renditionLayout),
