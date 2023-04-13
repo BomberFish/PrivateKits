@@ -487,7 +487,8 @@ public extension CUICatalog {
                 throw _Errors.failedToEditItem(lineFailed: #line)
             }
             
-            let unslicedSize: CGSize = rendition.unslicedSize()
+//            let unslicedSize: CGSize = rendition.unslicedSize()
+            let unslicedSize = CGSize(width: 200.0, height: 200.0)
             print("hw", unslicedSize.height, unslicedSize.width)
             let renditionLayout = rendition.type == 0 ? Int16(rendition.subtype) : Int16(rendition.type)
             guard let generator = CSIGenerator(canvasSize: unslicedSize, sliceCount: 1, layout: renditionLayout),
