@@ -455,12 +455,12 @@ public extension CUICatalog {
         return keyStore
     }
     
-    func editItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String, renWidth: Double, renHeight: Double) throws {
-        let keyStore = try editingItem(item, fileURL: fileURL, to: newValue, newNameIfImage: newNameIfImage, renWidth: renWidth, renHeight: renHeight)
+    func editItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, renWidth: Double, renHeight: Double) throws {
+        let keyStore = try editingItem(item, fileURL: fileURL, to: newValue, renWidth: renWidth, renHeight: renHeight)
         try writekeyStore(keyStore, to: fileURL)
     }
     
-    func editingItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, newNameIfImage: String, renWidth: Double, renHeight: Double) throws -> CUIMutableCommonAssetStorage {
+    func editingItem(_ item: Rendition, fileURL: URL, to newValue: Rendition.Representation, renWidth: Double, renHeight: Double) throws -> CUIMutableCommonAssetStorage {
         guard let keyStore = CUIMutableCommonAssetStorage(path: fileURL.path, forWriting: true) else {
             throw _Errors.unableToAccessCatalogFile(fileURL: fileURL)
         }
@@ -514,7 +514,7 @@ public extension CUICatalog {
             // Add Bitmap Wrapper and Set Rendition Properties
             generator.addBitmap(wrapper)
             generator.addSliceRect(rendition._destinationFrame())
-            generator.prepareToEdit(forRendition: rendition, newName: newNameIfImage)
+            generator.prepareToEdit(forRendition: rendition)
             
             guard let csiRep = generator.csiRepresentation(withCompression: true) else {
                 throw _Errors.failedToEditItem()
@@ -585,10 +585,10 @@ public extension CUICatalog {
 }
 
 private extension CSIGenerator {
-    func prepareToEdit(forRendition rendition: CUIThemeRendition, newName: String) {
+    func prepareToEdit(forRendition rendition: CUIThemeRendition) {
         let flags = rendition.renditionFlags()?.pointee
         
-        name = newName
+        name = rendition.name()
         blendMode = rendition.blendMode
         
         colorSpaceID = Int16(rendition.colorSpaceID())
