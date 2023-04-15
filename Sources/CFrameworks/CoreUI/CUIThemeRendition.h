@@ -30,6 +30,7 @@
 @property(nonatomic) int exifOrientation;
 @property(nonatomic) double opacity;
 @property(readonly, nonatomic) NSData *srcData;
+@property (nonatomic, retain) NSString *internalName;
 //@property (nonatomic) NSInteger type;
 
 - (struct renditionkeytoken *)key;
@@ -41,6 +42,9 @@
 - (bool)isHeaderFlaggedFPO;
 - (struct cuithemerenditionrenditionflags *)renditionFlags;
 - (bool)isVectorBased;
+- (id)properties;
+- (void)setName:(id)arg1;
+- (id)internalName;
 - (int)pixelFormat;
 - (bool)isInternalLink;
 - (CUIRenditionKey *)linkingToRendition;
