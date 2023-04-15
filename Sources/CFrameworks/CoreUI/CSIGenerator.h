@@ -29,6 +29,7 @@
 - (NSData * _Null_unspecified)CSIRepresentationWithCompression:(bool)arg1;
 - (id _Nullable)initWithCanvasSize:(struct CGSize)arg1 sliceCount:(unsigned int)arg2 layout:(short)arg3;
 - (id)initWithColorNamed:(id)arg0 colorSpaceID:(NSUInteger)arg1 components:(id)arg2 ;
+- (long long)targetPlatform;
 @end
 
 
