@@ -45,6 +45,9 @@
 - (id)properties;
 - (void)setName:(id)arg1;
 - (id)internalName;
+- (id)externalTags;
+- (int)objectVersion;
+- (id)provideTextureInfo;
 - (int)pixelFormat;
 - (bool)isInternalLink;
 - (CUIRenditionKey *)linkingToRendition;
